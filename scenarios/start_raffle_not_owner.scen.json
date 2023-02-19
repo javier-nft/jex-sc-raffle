@@ -1,0 +1,42 @@
+{
+  "steps": [
+    {
+      "step": "externalSteps",
+      "path": "init.scen.json"
+    },
+    {
+      "step": "setState",
+      "accounts": {
+        "address:user": {
+          "nonce": "1",
+          "balance": "0"
+        }
+      }
+    },
+    {
+      "step": "scCall",
+      "txId": "startRaffleNotOwner",
+      "tx": {
+        "from": "address:user",
+        "to": "sc:raffle",
+        "function": "startRaffle",
+        "arguments": [
+          "3600",
+          "str:JEX-000000",
+          "0",
+          "10000,000000000000000000",
+          "100",
+          "address:user"
+        ],
+        "gasLimit": "5,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "status": "4",
+        "message": "str:Endpoint can only be called by owner",
+        "gas": "*",
+        "refund": "*"
+      }
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "steps": [
+    {
+      "step": "externalSteps",
+      "path": "init.scen.json"
+    },
+    {
+      "step": "setState",
+      "accounts": {
+        "address:owner": {
+          "nonce": "1",
+          "balance": "0",
+          "esdt": {
+            "str:ASH-000000": "10000,000000000000000000"
+          }
+        }
+      }
+    },
+    {
+      "step": "scCall",
+      "txId": "startRaffleMissingBurnRole",
+      "tx": {
+        "from": "address:owner",
+        "to": "sc:raffle",
+        "function": "startRaffle",
+        "esdtValue": [
+          {
+            "tokenIdentifier": "str:ASH-000000",
+            "value": "10000,000000000000000000"
+          }
+        ],
+        "arguments": [
+          "3600",
+          "str:JEX-000000",
+          "0",
+          "10000,000000000000000000",
+          "100",
+          "address:user"
+        ],
+        "gasLimit": "5,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "status": "4",
+        "message": "str:Missing burn role",
+        "gas": "*",
+        "refund": "*"
+      }
+    }
+  ]
+}

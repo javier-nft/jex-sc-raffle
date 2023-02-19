@@ -1,0 +1,44 @@
+{
+  "steps": [
+    {
+      "step": "externalSteps",
+      "path": "init.scen.json"
+    },
+    {
+      "step": "setState",
+      "accounts": {
+        "address:user": {
+          "nonce": "1",
+          "balance": "0",
+          "esdt": {
+            "str:JEX-000000": "10000,000000000000000000"
+          }
+        }
+      }
+    },
+    {
+      "step": "scCall",
+      "txId": "buyTicketsRaffleNotStarted",
+      "tx": {
+        "from": "address:user",
+        "to": "sc:raffle",
+        "function": "buyTickets",
+        "esdtValue": [
+          {
+            "tokenIdentifier": "str:JEX-000000",
+            "value": "10000,000000000000000000"
+          }
+        ],
+        "arguments": ["1"],
+        "gasLimit": "5,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "status": "4",
+        "message": "str:Raffle not started",
+        "gas": "*",
+        "refund": "*"
+      }
+    }
+  ]
+}

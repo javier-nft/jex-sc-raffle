@@ -1,0 +1,100 @@
+{
+  "steps": [
+    {
+      "step": "externalSteps",
+      "path": "init.scen.json"
+    },
+    {
+      "step": "setState",
+      "accounts": {
+        "address:owner": {
+          "nonce": "1",
+          "balance": "0",
+          "esdt": {
+            "str:ASH-000000": "50000,000000000000000000"
+          }
+        },
+        "sc:raffle": {
+          "code": "file:../output/jex-sc-raffle.wasm",
+          "esdt": {
+            "str:JEX-000000": {
+              "roles": ["ESDTRoleLocalBurn"]
+            }
+          },
+          "owner": "address:owner",
+          "storage": {
+            "str:state": "1"
+          }
+        }
+      }
+    },
+    {
+      "step": "scCall",
+      "txId": "startRaffleNominal",
+      "tx": {
+        "from": "address:owner",
+        "to": "sc:raffle",
+        "function": "startRaffle",
+        "esdtValue": [
+          {
+            "tokenIdentifier": "str:ASH-000000",
+            "value": "50000,000000000000000000"
+          }
+        ],
+        "arguments": [
+          "3600",
+          "str:JEX-000000",
+          "0",
+          "10000,000000000000000000",
+          "50",
+          "address:fees"
+        ],
+        "gasLimit": "5,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "status": "0",
+        "message": "",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "checkState",
+      "accounts": {
+        "address:owner": {
+          "balance": "0",
+          "nonce": "2"
+        },
+        "sc:raffle": {
+          "code": "*",
+          "esdt": {
+            "str:ASH-000000": "50000,000000000000000000",
+            "str:JEX-000000": {
+              "instances": [
+                {
+                  "nonce": "0",
+                  "balance": ""
+                }
+              ],
+              "roles": ["ESDTRoleLocalBurn"]
+            }
+          },
+          "storage": {
+            "str:burn_rate_percent": "50",
+            "str:fees_address": "address:fees",
+            "str:prize": {
+              "1": "nested:str:ASH-000000",
+              "2": "u64:0",
+              "3": "biguint:50000,000000000000000000"
+            },
+            "str:state": "0",
+            "str:ticket_price": "10000,000000000000000000",
+            "str:ticket_sale_end_timestamp": "3600",
+            "str:ticket_token": "nested:str:JEX-000000|u64:0"
+          }
+        }
+      }
+    }
+  ]
+}

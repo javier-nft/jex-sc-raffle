@@ -1,0 +1,74 @@
+{
+  "steps": [
+    {
+      "step": "externalSteps",
+      "path": "init.scen.json"
+    },
+    {
+      "step": "setState",
+      "accounts": {
+        "address:fees": {},
+        "address:user": {},
+        "address:user2": {},
+        "address:user3": {},
+        "sc:raffle": {
+          "code": "file:../output/jex-sc-raffle.wasm",
+          "esdt": {
+            "str:ASH-000000": "40000,000000000000000000",
+            "str:JEX-000000": {
+              "instances": [
+                {
+                  "nonce": "0",
+                  "balance": "150000,000000000000000000"
+                }
+              ],
+              "roles": ["ESDTRoleLocalBurn"]
+            }
+          },
+          "owner": "address:owner",
+          "storage": {
+            "str:burn_rate_percent": "50",
+            "str:entries.len": "6",
+            "str:entries.item|u32:1": "address:user",
+            "str:entries.item|u32:2": "address:user",
+            "str:entries.item|u32:3": "address:user",
+            "str:entries.item|u32:4": "address:user2",
+            "str:entries.item|u32:5": "address:user2",
+            "str:entries.item|u32:6": "address:user3",
+            "str:fees_address": "address:fees",
+            "str:prize": {
+              "1": "nested:str:ASH-000000",
+              "2": "u64:0",
+              "3": "biguint:40000,000000000000000000"
+            },
+            "str:state": "0",
+            "str:ticket_price": "10000,000000000000000000",
+            "str:ticket_sale_end_timestamp": "3600",
+            "str:ticket_token": "nested:str:JEX-000000|u64:0"
+          }
+        }
+      },
+      "currentBlockInfo": {
+        "blockTimestamp": "4000"
+      }
+    },
+    {
+      "step": "scCall",
+      "txId": "pickWinnersNominal",
+      "tx": {
+        "from": "address:owner",
+        "to": "sc:raffle",
+        "function": "pickWinners",
+        "arguments": ["999"],
+        "gasLimit": "5,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "status": "4",
+        "message": "str:Too many winners",
+        "gas": "*",
+        "refund": "*"
+      }
+    }
+  ]
+}

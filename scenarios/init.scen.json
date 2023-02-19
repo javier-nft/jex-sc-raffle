@@ -1,5 +1,4 @@
 {
-  "name": "jex-sc-raffle",
   "steps": [
     {
       "step": "setState",
@@ -33,6 +32,21 @@
         "logs": [],
         "gas": "*",
         "refund": "*"
+      }
+    },
+    {
+      "step": "checkState",
+      "accounts": {
+        "address:owner": {
+          "balance": "0",
+          "nonce": "2"
+        },
+        "sc:raffle": {
+          "code": "*",
+          "storage": {
+            "str:state": "1"
+          }
+        }
       }
     }
   ]

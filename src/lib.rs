@@ -3,10 +3,21 @@
 multiversx_sc::imports!();
 multiversx_sc::derive_imports!();
 
-#[derive(TopEncode, TopDecode, TypeAbi, PartialEq, Eq, Clone, Copy)]
+#[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, TypeAbi, PartialEq, Eq, Clone, Copy)]
 pub enum State {
     Started,
     Ended,
+}
+
+#[derive(TopEncode, TopDecode, TypeAbi)]
+pub struct RaffleStatus<M: ManagedTypeApi> {
+    state: State,
+    prize: EsdtTokenPayment<M>,
+    ticket_price: EsdtTokenPayment<M>,
+    ticket_sale_end_timestamp: u64,
+    burn_rate_percent: u32,
+    fees_address: ManagedAddress<M>,
+    nb_entries: usize,
 }
 
 const MAX_BURN_RATE_PERCENT: u32 = 100;
@@ -26,8 +37,8 @@ pub trait JexScRaffleContract {
     fn start_raffle(
         &self,
         ticket_sale_duration: u64,
-        ticket_buy_token_identifier: TokenIdentifier,
-        ticket_buy_token_nonce: u64,
+        ticket_token_identifier: TokenIdentifier,
+        ticket_token_nonce: u64,
         ticket_price: BigUint,
         burn_rate_percent: u32,
         fees_address: ManagedAddress,
@@ -50,7 +61,7 @@ pub trait JexScRaffleContract {
         if burn_rate_percent > 0u32 {
             let roles = self
                 .blockchain()
-                .get_esdt_local_roles(&ticket_buy_token_identifier.clone());
+                .get_esdt_local_roles(&ticket_token_identifier.clone());
             require!(roles.has_role(&EsdtLocalRole::Burn), "Missing burn role");
         }
 
@@ -60,13 +71,14 @@ pub trait JexScRaffleContract {
             payment.amount,
         ));
 
-        self.ticket_price().set(&ticket_price);
+        self.ticket_price().set(EsdtTokenPayment::new(
+            ticket_token_identifier,
+            ticket_token_nonce,
+            ticket_price,
+        ));
 
         self.ticket_sale_end_timestamp()
             .set(self.blockchain().get_block_timestamp() + ticket_sale_duration);
-
-        self.ticket_token()
-            .set((ticket_buy_token_identifier, ticket_buy_token_nonce));
 
         self.state().set(State::Started);
     }
@@ -86,23 +98,23 @@ pub trait JexScRaffleContract {
             "Too many winners"
         );
 
-        let (ticket_token_identifier, ticket_token_nonce) = self.ticket_token().get();
+        let ticket_price = self.ticket_price().get();
         let mut tickets_token_balance = self.blockchain().get_sc_balance(
-            &EgldOrEsdtTokenIdentifier::esdt(ticket_token_identifier.clone()),
-            ticket_token_nonce,
+            &EgldOrEsdtTokenIdentifier::esdt(ticket_price.token_identifier.clone()),
+            ticket_price.token_nonce,
         );
 
         self.do_burn(
-            &ticket_token_identifier,
-            ticket_token_nonce,
+            &ticket_price.token_identifier,
+            ticket_price.token_nonce,
             &mut tickets_token_balance,
         );
 
         if tickets_token_balance > 0 {
             self.send().direct_esdt(
                 &self.fees_address().get(),
-                &ticket_token_identifier,
-                ticket_token_nonce,
+                &ticket_price.token_identifier,
+                ticket_price.token_nonce,
                 &tickets_token_balance,
             );
         }
@@ -144,7 +156,6 @@ pub trait JexScRaffleContract {
         self.prize().clear();
         self.ticket_price().clear();
         self.ticket_sale_end_timestamp().clear();
-        self.ticket_token().clear();
 
         self.state().set(State::Ended);
     }
@@ -163,17 +174,14 @@ pub trait JexScRaffleContract {
 
         let payment = self.call_value().single_esdt();
 
-        let (ticket_token_identifier, ticket_token_nonce) = self.ticket_token().get();
+        let ticket_price = self.ticket_price().get();
         require!(
-            payment.token_identifier == ticket_token_identifier
-                && payment.token_nonce == ticket_token_nonce,
+            payment.token_identifier == ticket_price.token_identifier
+                && payment.token_nonce == ticket_price.token_nonce,
             "Invalid token"
         );
 
-        require!(
-            payment.amount == self.ticket_price().get() * nb,
-            "Invalid amount"
-        );
+        require!(payment.amount == ticket_price.amount * nb, "Invalid amount");
 
         let caller = self.blockchain().get_caller();
         let mut entries_mapper = self.entries();
@@ -230,6 +238,30 @@ pub trait JexScRaffleContract {
 
     // Storage & Views
 
+    #[view(getRaffleStatus)]
+    fn get_raffle_status(&self) -> RaffleStatus<Self::Api> {
+        return RaffleStatus {
+            burn_rate_percent: self.burn_rate_percent().get(),
+            fees_address: self.fees_address().get(),
+            nb_entries: self.entries().len(),
+            prize: self.prize().get(),
+            state: self.state().get(),
+            ticket_price: self.ticket_price().get(),
+            ticket_sale_end_timestamp: self.ticket_sale_end_timestamp().get(),
+        };
+    }
+
+    #[view(getEntries)]
+    fn get_entries(
+        &self,
+        from: usize,
+        size: usize,
+    ) -> MultiValueEncoded<Self::Api, ManagedAddress> {
+        let entries: ManagedVec<ManagedAddress> =
+            self.entries().iter().skip(from).take(size).collect();
+        entries.into()
+    }
+
     #[view(getBurnRatePercent)]
     #[storage_mapper("burn_rate_percent")]
     fn burn_rate_percent(&self) -> SingleValueMapper<u32>;
@@ -251,13 +283,9 @@ pub trait JexScRaffleContract {
 
     #[view(getTicketPrice)]
     #[storage_mapper("ticket_price")]
-    fn ticket_price(&self) -> SingleValueMapper<BigUint>;
+    fn ticket_price(&self) -> SingleValueMapper<EsdtTokenPayment>;
 
     #[view(getTicketSaleEndTimestamp)]
     #[storage_mapper("ticket_sale_end_timestamp")]
     fn ticket_sale_end_timestamp(&self) -> SingleValueMapper<u64>;
-
-    #[view(getTicketToken)]
-    #[storage_mapper("ticket_token")]
-    fn ticket_token(&self) -> SingleValueMapper<(TokenIdentifier, u64)>;
 }

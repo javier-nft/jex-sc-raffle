@@ -12,11 +12,11 @@ pub enum State {
 #[derive(TopEncode, TopDecode, TypeAbi)]
 pub struct RaffleStatus<M: ManagedTypeApi> {
     state: State,
-    prize: EsdtTokenPayment<M>,
-    ticket_price: EsdtTokenPayment<M>,
+    prize: Option<EsdtTokenPayment<M>>,
+    ticket_price: Option<EsdtTokenPayment<M>>,
     ticket_sale_end_timestamp: u64,
     burn_rate_percent: u32,
-    fees_address: ManagedAddress<M>,
+    fees_address: Option<ManagedAddress<M>>,
     nb_entries: usize,
 }
 
@@ -240,13 +240,29 @@ pub trait JexScRaffleContract {
 
     #[view(getRaffleStatus)]
     fn get_raffle_status(&self) -> RaffleStatus<Self::Api> {
+        let fees_address = if self.fees_address().is_empty() {
+            Option::None
+        } else {
+            Option::Some(self.fees_address().get())
+        };
+        let prize = if self.prize().is_empty() {
+            Option::None
+        } else {
+            Option::Some(self.prize().get())
+        };
+        let ticket_price = if self.ticket_price().is_empty() {
+            Option::None
+        } else {
+            Option::Some(self.ticket_price().get())
+        };
+
         return RaffleStatus {
             burn_rate_percent: self.burn_rate_percent().get(),
-            fees_address: self.fees_address().get(),
+            fees_address,
             nb_entries: self.entries().len(),
-            prize: self.prize().get(),
+            prize,
             state: self.state().get(),
-            ticket_price: self.ticket_price().get(),
+            ticket_price,
             ticket_sale_end_timestamp: self.ticket_sale_end_timestamp().get(),
         };
     }

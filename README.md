@@ -11,16 +11,16 @@ startRaffle (...)
   * fees address
 
 
-enableBuyWithNFT (...)
+enableBuyWithNFT (...) **not implemented**
 
   * collection
   * nonce
   * nb tickets
 
 
-selectWinners ()
+pickWinners ()
 
-  * select winners
+  * select winners randomly
   * send rewards to winners
 
 endRaffle ()
@@ -36,6 +36,6 @@ buyTickets (...)
   * nb tickets
 
 
-buyTicketWithNFT (...)
+buyTicketWithNFT (...) **not implemented**
 
   * NFT transfer

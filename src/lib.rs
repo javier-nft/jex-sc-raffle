@@ -11,6 +11,7 @@ pub enum State {
 
 #[derive(TopEncode, TopDecode, TypeAbi)]
 pub struct RaffleStatus<M: ManagedTypeApi> {
+    name: ManagedBuffer<M>,
     state: State,
     prize: Option<EsdtTokenPayment<M>>,
     ticket_price: Option<EsdtTokenPayment<M>>,
@@ -265,6 +266,7 @@ pub trait JexScRaffleContract {
         };
 
         return RaffleStatus {
+            name: self.raffle_name().get(),
             burn_rate_percent: self.burn_rate_percent().get(),
             fees_address,
             nb_entries: self.entries().len(),

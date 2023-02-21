@@ -27,7 +27,7 @@ const MAX_BURN_RATE_PERCENT: u32 = 100;
 pub trait JexScRaffleContract {
     #[init]
     fn init(&self) {
-        self.state().set(State::Ended);
+        self.state().set_if_empty(State::Ended);
     }
 
     // Owner endpoints

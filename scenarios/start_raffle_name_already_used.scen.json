@@ -11,14 +11,27 @@
           "nonce": "1",
           "balance": "0",
           "esdt": {
-            "str:ASH-000000": "10000,000000000000000000"
+            "str:ASH-000000": "50000,000000000000000000"
+          }
+        },
+        "sc:raffle": {
+          "code": "file:../output/jex-sc-raffle.wasm",
+          "esdt": {
+            "str:JEX-000000": {
+              "roles": ["ESDTRoleLocalBurn"]
+            }
+          },
+          "owner": "address:owner",
+          "storage": {
+            "str:state": "1",
+            "str:winners|nested:str:raffle_1|str:.len": "3"
           }
         }
       }
     },
     {
       "step": "scCall",
-      "txId": "startRaffleMissingBurnRole",
+      "txId": "startRaffleNameAlreadyUsed",
       "tx": {
         "from": "address:owner",
         "to": "sc:raffle",
@@ -26,7 +39,7 @@
         "esdtValue": [
           {
             "tokenIdentifier": "str:ASH-000000",
-            "value": "10000,000000000000000000"
+            "value": "50000,000000000000000000"
           }
         ],
         "arguments": [
@@ -35,15 +48,15 @@
           "str:JEX-000000",
           "0",
           "10000,000000000000000000",
-          "100",
-          "address:user"
+          "50",
+          "address:fees"
         ],
         "gasLimit": "5,000,000",
         "gasPrice": "0"
       },
       "expect": {
         "status": "4",
-        "message": "str:Missing burn role",
+        "message": "str:Name already used",
         "gas": "*",
         "refund": "*"
       }

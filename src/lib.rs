@@ -36,6 +36,7 @@ pub trait JexScRaffleContract {
     #[payable("*")]
     fn start_raffle(
         &self,
+        raffle_name: ManagedBuffer,
         ticket_sale_duration: u64,
         ticket_token_identifier: TokenIdentifier,
         ticket_token_nonce: u64,
@@ -47,6 +48,9 @@ pub trait JexScRaffleContract {
             self.state().get() == State::Ended,
             "Current raffle not ended"
         );
+
+        require!(self.winners(&raffle_name).is_empty(), "Name already used");
+        self.raffle_name().set(&raffle_name);
 
         let payment = self.call_value().single_esdt();
 
@@ -122,6 +126,7 @@ pub trait JexScRaffleContract {
         let prize = self.prize().get();
         let rewards_per_ticket = prize.amount / BigUint::from(nb_winners);
 
+        let raffle_name = self.raffle_name().get();
         let mut rnd = RandomnessSource::new();
         for _ in 0..nb_winners {
             let num = 1 + rnd.next_usize_in_range(0, entries_mapper.len());
@@ -136,6 +141,8 @@ pub trait JexScRaffleContract {
                     &rewards_per_ticket,
                 );
             }
+
+            self.winners(&raffle_name).push(&winner);
         }
 
         self.send_leftovers_to_owner();
@@ -154,6 +161,7 @@ pub trait JexScRaffleContract {
         self.entries().clear();
         self.fees_address().clear();
         self.prize().clear();
+        self.raffle_name().clear();
         self.ticket_price().clear();
         self.ticket_sale_end_timestamp().clear();
 
@@ -289,6 +297,10 @@ pub trait JexScRaffleContract {
     #[storage_mapper("fees_address")]
     fn fees_address(&self) -> SingleValueMapper<ManagedAddress>;
 
+    #[view(getRaffleName)]
+    #[storage_mapper("raffle_name")]
+    fn raffle_name(&self) -> SingleValueMapper<ManagedBuffer>;
+
     #[view(getPrize)]
     #[storage_mapper("prize")]
     fn prize(&self) -> SingleValueMapper<EsdtTokenPayment>;
@@ -304,4 +316,8 @@ pub trait JexScRaffleContract {
     #[view(getTicketSaleEndTimestamp)]
     #[storage_mapper("ticket_sale_end_timestamp")]
     fn ticket_sale_end_timestamp(&self) -> SingleValueMapper<u64>;
+
+    #[view(getWinners)]
+    #[storage_mapper("winners")]
+    fn winners(&self, raffle_name: &ManagedBuffer) -> VecMapper<Self::Api, ManagedAddress>;
 }

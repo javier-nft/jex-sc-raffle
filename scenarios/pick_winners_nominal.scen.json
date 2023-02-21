@@ -55,6 +55,7 @@
               "2": "u64:0",
               "3": "biguint:40000,000000000000000000"
             },
+            "str:raffle_name": "str:raffle_1",
             "str:state": "0",
             "str:ticket_price": {
               "1": "nested:str:JEX-000000",
@@ -77,7 +78,7 @@
         "to": "sc:raffle",
         "function": "pickWinners",
         "arguments": ["4"],
-        "gasLimit": "5,000,000",
+        "gasLimit": "10,000,000",
         "gasPrice": "0"
       },
       "expect": {
@@ -140,13 +141,20 @@
               "2": "u64:0",
               "3": "biguint:40000,000000000000000000"
             },
+            "str:raffle_name": "str:raffle_1",
             "str:state": "0",
             "str:ticket_price": {
               "1": "nested:str:JEX-000000",
               "2": "u64:0",
               "3": "biguint:10000,000000000000000000"
             },
-            "str:ticket_sale_end_timestamp": "3600"
+            "str:ticket_sale_end_timestamp": "3600",
+            "str:winners|nested:str:raffle_1|str:.len": "4",
+            "str:winners|nested:str:raffle_1|str:.item|u32:1": "*",
+            "str:winners|nested:str:raffle_1|str:.item|u32:2": "*",
+            "str:winners|nested:str:raffle_1|str:.item|u32:3": "*",
+            "str:winners|nested:str:raffle_1|str:.item|u32:4": "*",
+            "str:winners|nested:str:raffle_1|str:.item|u32:5": ""
           }
         },
         "+": ""

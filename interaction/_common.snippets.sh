@@ -38,6 +38,7 @@ pickWinners() {
 }
 
 startRaffle() {
+    reap -p "Raffle name" RAFFLE_NAME
     read -p "Prize token identifier: " PRIZE_TOKEN_IDENTIFIER
     read -p "Prize amount (in weis - no float): " PRIZE_AMOUNT
     read -p "Sale duration (sec): " SALE_DURATION
@@ -47,6 +48,7 @@ startRaffle() {
     read -p "Burn rate (0-100): " BURN_RATE
     read -p "Fees receiver: " FEES_RECEIVER
 
+    RAFFLE_NAME="0x$(echo -n "${RAFFLE_NAME}" | xxd -ps)"
     PRIZE_TOKEN_IDENTIFIER="0x$(echo -n "${PRIZE_TOKEN_IDENTIFIER}" | xxd -ps)"
     TICKETS_TOKEN_IDENTIFIER="0x$(echo -n "${TICKETS_TOKEN_IDENTIFIER}" | xxd -ps)"
     FEES_RECEIVER="0x$(mxpy wallet bech32 --decode ${FEES_RECEIVER})"
@@ -55,7 +57,8 @@ startRaffle() {
     mxpy contract call ${SC_ADDRESS} --recall-nonce --keyfile=${KEYFILE} \
         --gas-limit=10000000 \
         --function="ESDTTransfer" \
-        --arguments ${PRIZE_TOKEN_IDENTIFIER} ${PRIZE_AMOUNT} \
+        --arguments "${RAFFLE_NAME}" \
+                    ${PRIZE_TOKEN_IDENTIFIER} ${PRIZE_AMOUNT} \
                     ${METHOD} \
                     ${SALE_DURATION} ${TICKETS_TOKEN_IDENTIFIER} ${TICKETS_TOKEN_NONCE} \
                     ${PRICE_PER_TICKET} ${BURN_RATE} ${FEES_RECEIVER} \
@@ -85,6 +88,16 @@ getEntries() {
 
 getRaffleStatus() {
     mxpy contract query ${SC_ADDRESS} --function "getRaffleStatus" --proxy=${PROXY}
+}
+
+getWinners() {
+    reap -p "Raffle name" RAFFLE_NAME
+
+    RAFFLE_NAME="0x$(echo -n "${RAFFLE_NAME}" | xxd -ps)"
+
+    erdpy contract query ${SC_ADDRESS} \
+        --function "getWinners" --arguments "${RAFFLE_NAME}" \
+        --proxy=${PROXY}
 }
 
 ##

@@ -56,10 +56,17 @@
             "str:entries.len": "0",
             "str:fees_address": "",
             "str:prize": "",
+            "str:raffle_name": "",
             "str:state": "1",
             "str:ticket_price": "",
             "str:ticket_sale_end_timestamp": "",
-            "str:ticket_token": ""
+            "str:ticket_token": "",
+            "str:winners|nested:str:raffle_1|str:.len": "4",
+            "str:winners|nested:str:raffle_1|str:.item|u32:1": "*",
+            "str:winners|nested:str:raffle_1|str:.item|u32:2": "*",
+            "str:winners|nested:str:raffle_1|str:.item|u32:3": "*",
+            "str:winners|nested:str:raffle_1|str:.item|u32:4": "*",
+            "str:winners|nested:str:raffle_1|str:.item|u32:5": ""
           }
         },
         "+": ""

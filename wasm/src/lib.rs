@@ -5,9 +5,9 @@
 ////////////////////////////////////////////////////
 
 // Init:                                 1
-// Endpoints:                           12
+// Endpoints:                           14
 // Async Callback (empty):               1
-// Total number of exported functions:  14
+// Total number of exported functions:  16
 
 #![no_std]
 #![feature(alloc_error_handler, lang_items)]
@@ -26,10 +26,12 @@ multiversx_sc_wasm_adapter::endpoints! {
         getEntries
         getBurnRatePercent
         getFeesAddress
+        getRaffleName
         getPrize
         getState
         getTicketPrice
         getTicketSaleEndTimestamp
+        getWinners
     )
 }
 

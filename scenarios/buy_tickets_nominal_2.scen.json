@@ -89,6 +89,7 @@
               "2": "u64:0",
               "3": "biguint:50000,000000000000000000"
             },
+            "str:raffle_name": "str:raffle_1",
             "str:state": "0",
             "str:ticket_price": {
               "1": "nested:str:JEX-000000",

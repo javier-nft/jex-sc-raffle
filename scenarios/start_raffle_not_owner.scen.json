@@ -21,6 +21,7 @@
         "to": "sc:raffle",
         "function": "startRaffle",
         "arguments": [
+          "str:raffle_1",
           "3600",
           "str:JEX-000000",
           "0",

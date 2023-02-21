@@ -38,7 +38,7 @@ pickWinners() {
 }
 
 startRaffle() {
-    reap -p "Raffle name" RAFFLE_NAME
+    read -p "Raffle name: " RAFFLE_NAME
     read -p "Prize token identifier: " PRIZE_TOKEN_IDENTIFIER
     read -p "Prize amount (in weis - no float): " PRIZE_AMOUNT
     read -p "Sale duration (sec): " SALE_DURATION
@@ -57,9 +57,9 @@ startRaffle() {
     mxpy contract call ${SC_ADDRESS} --recall-nonce --keyfile=${KEYFILE} \
         --gas-limit=10000000 \
         --function="ESDTTransfer" \
-        --arguments "${RAFFLE_NAME}" \
-                    ${PRIZE_TOKEN_IDENTIFIER} ${PRIZE_AMOUNT} \
+        --arguments ${PRIZE_TOKEN_IDENTIFIER} ${PRIZE_AMOUNT} \
                     ${METHOD} \
+                    "${RAFFLE_NAME}" \
                     ${SALE_DURATION} ${TICKETS_TOKEN_IDENTIFIER} ${TICKETS_TOKEN_NONCE} \
                     ${PRICE_PER_TICKET} ${BURN_RATE} ${FEES_RECEIVER} \
         --proxy=${PROXY} --chain=${CHAIN} --send || return
@@ -91,7 +91,7 @@ getRaffleStatus() {
 }
 
 getWinners() {
-    reap -p "Raffle name" RAFFLE_NAME
+    read -p "Raffle name: " RAFFLE_NAME
 
     RAFFLE_NAME="0x$(echo -n "${RAFFLE_NAME}" | xxd -ps)"
 

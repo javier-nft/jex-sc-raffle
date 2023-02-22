@@ -96,13 +96,6 @@ pub trait JexScRaffleContract {
             "Still in tickets sale period"
         );
 
-        let entries_mapper = self.entries();
-
-        require!(
-            entries_mapper.len() >= nb_winners.into(),
-            "Too many winners"
-        );
-
         let ticket_price = self.ticket_price().get();
         let mut tickets_token_balance = self.blockchain().get_sc_balance(
             &EgldOrEsdtTokenIdentifier::esdt(ticket_price.token_identifier.clone()),
@@ -124,26 +117,9 @@ pub trait JexScRaffleContract {
             );
         }
 
-        let prize = self.prize().get();
-        let rewards_per_ticket = prize.amount / BigUint::from(nb_winners);
-
-        let raffle_name = self.raffle_name().get();
-        let mut rnd = RandomnessSource::new();
-        for _ in 0..nb_winners {
-            let num = 1 + rnd.next_usize_in_range(0, entries_mapper.len());
-
-            let winner = entries_mapper.get(num);
-
-            if rewards_per_ticket > 0 {
-                self.send().direct_esdt(
-                    &winner,
-                    &prize.token_identifier,
-                    prize.token_nonce,
-                    &rewards_per_ticket,
-                );
-            }
-
-            self.winners(&raffle_name).push(&winner);
+        let entries_mapper = self.entries();
+        if !entries_mapper.is_empty() {
+            self.send_rewards_to_winners(nb_winners);
         }
 
         self.send_leftovers_to_owner();
@@ -242,6 +218,37 @@ pub trait JexScRaffleContract {
                 prize.token_nonce,
                 &leftover_balance,
             );
+        }
+    }
+
+    fn send_rewards_to_winners(&self, nb_winners: u16) {
+        let entries_mapper = self.entries();
+
+        require!(
+            entries_mapper.len() >= nb_winners.into(),
+            "Too many winners"
+        );
+
+        let prize = self.prize().get();
+        let rewards_per_ticket = prize.amount / BigUint::from(nb_winners);
+
+        let raffle_name = self.raffle_name().get();
+        let mut rnd = RandomnessSource::new();
+        for _ in 0..nb_winners {
+            let num = 1 + rnd.next_usize_in_range(0, entries_mapper.len());
+
+            let winner = entries_mapper.get(num);
+
+            if rewards_per_ticket > 0 {
+                self.send().direct_esdt(
+                    &winner,
+                    &prize.token_identifier,
+                    prize.token_nonce,
+                    &rewards_per_ticket,
+                );
+            }
+
+            self.winners(&raffle_name).push(&winner);
         }
     }
 

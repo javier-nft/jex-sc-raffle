@@ -57,7 +57,7 @@
             "str:fees_address": "",
             "str:prize": "",
             "str:raffle_name": "",
-            "str:state": "1",
+            "str:state": "0",
             "str:ticket_price": "",
             "str:ticket_sale_end_timestamp": "",
             "str:ticket_token": "",

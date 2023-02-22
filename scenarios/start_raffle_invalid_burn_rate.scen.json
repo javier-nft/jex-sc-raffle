@@ -23,7 +23,7 @@
           },
           "owner": "address:owner",
           "storage": {
-            "str:state": "1"
+            "str:state": "0"
           }
         }
       }

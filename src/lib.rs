@@ -5,8 +5,8 @@ multiversx_sc::derive_imports!();
 
 #[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, TypeAbi, PartialEq, Eq, Clone, Copy)]
 pub enum State {
-    Started,
     Ended,
+    Started,
 }
 
 #[derive(TopEncode, TopDecode, TypeAbi)]

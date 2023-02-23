@@ -67,7 +67,7 @@ startRaffle() {
 
 endRaffle() {
     mxpy contract call ${SC_ADDRESS} --recall-nonce --keyfile=${KEYFILE} \
-        --gas-limit=10000000 \
+        --gas-limit=20000000 \
         --function="endRaffle" \
         --proxy=${PROXY} --chain=${CHAIN} --send || return
 }

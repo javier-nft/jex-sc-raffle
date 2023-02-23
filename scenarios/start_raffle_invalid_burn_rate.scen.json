@@ -1,0 +1,64 @@
+{
+  "steps": [
+    {
+      "step": "externalSteps",
+      "path": "init.scen.json"
+    },
+    {
+      "step": "setState",
+      "accounts": {
+        "address:owner": {
+          "nonce": "1",
+          "balance": "0",
+          "esdt": {
+            "str:ASH-000000": "50000,000000000000000000"
+          }
+        },
+        "sc:raffle": {
+          "code": "file:../output/jex-sc-raffle.wasm",
+          "esdt": {
+            "str:JEX-000000": {
+              "roles": ["ESDTRoleLocalBurn"]
+            }
+          },
+          "owner": "address:owner",
+          "storage": {
+            "str:state": "0"
+          }
+        }
+      }
+    },
+    {
+      "step": "scCall",
+      "txId": "startRaffleInvalidBurnRate",
+      "tx": {
+        "from": "address:owner",
+        "to": "sc:raffle",
+        "function": "startRaffle",
+        "esdtValue": [
+          {
+            "tokenIdentifier": "str:ASH-000000",
+            "value": "50000,000000000000000000"
+          }
+        ],
+        "arguments": [
+          "str:raffle_1",
+          "3600",
+          "str:JEX-000000",
+          "0",
+          "10000,000000000000000000",
+          "999",
+          "address:fees"
+        ],
+        "gasLimit": "5,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "status": "4",
+        "message": "str:Invalid burn rate percent",
+        "gas": "*",
+        "refund": "*"
+      }
+    }
+  ]
+}

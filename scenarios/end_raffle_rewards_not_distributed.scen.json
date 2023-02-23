@@ -1,0 +1,26 @@
+{
+  "steps": [
+    {
+      "step": "externalSteps",
+      "path": "buy_tickets_nominal_2.scen.json"
+    },
+    {
+      "step": "scCall",
+      "txId": "endRaffleRewardsNotDistributed",
+      "tx": {
+        "from": "address:owner",
+        "to": "sc:raffle",
+        "function": "endRaffle",
+        "arguments": [],
+        "gasLimit": "5,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "status": "4",
+        "message": "str:Rewards not distributed",
+        "gas": "*",
+        "refund": "*"
+      }
+    }
+  ]
+}

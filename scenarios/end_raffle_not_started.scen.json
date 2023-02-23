@@ -1,0 +1,26 @@
+{
+  "steps": [
+    {
+      "step": "externalSteps",
+      "path": "init.scen.json"
+    },
+    {
+      "step": "scCall",
+      "txId": "endRaffleNotStarted",
+      "tx": {
+        "from": "address:owner",
+        "to": "sc:raffle",
+        "function": "endRaffle",
+        "arguments": [],
+        "gasLimit": "5,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "status": "4",
+        "message": "str:Raffle not started",
+        "gas": "*",
+        "refund": "*"
+      }
+    }
+  ]
+}

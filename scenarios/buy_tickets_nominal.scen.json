@@ -1,0 +1,96 @@
+{
+  "steps": [
+    {
+      "step": "externalSteps",
+      "path": "start_raffle_nominal.scen.json"
+    },
+    {
+      "step": "setState",
+      "accounts": {
+        "address:user": {
+          "nonce": "1",
+          "balance": "0",
+          "esdt": {
+            "str:JEX-000000": "30000,000000000000000000"
+          }
+        }
+      }
+    },
+    {
+      "step": "scCall",
+      "txId": "buyTicketsNominal",
+      "tx": {
+        "from": "address:user",
+        "to": "sc:raffle",
+        "function": "buyTickets",
+        "esdtValue": [
+          {
+            "tokenIdentifier": "str:JEX-000000",
+            "value": "30000,000000000000000000"
+          }
+        ],
+        "arguments": ["3"],
+        "gasLimit": "5,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "status": "0",
+        "message": "0",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "checkState",
+      "accounts": {
+        "address:user": {
+          "nonce": "2",
+          "balance": "0",
+          "esdt": {
+            "str:JEX-000000": ""
+          }
+        },
+        "address:owner": {
+          "balance": "0",
+          "nonce": "2"
+        },
+        "sc:raffle": {
+          "code": "*",
+          "esdt": {
+            "str:ASH-000000": "50000,000000000000000000",
+            "str:JEX-000000": {
+              "instances": [
+                {
+                  "nonce": "0",
+                  "balance": "30000,000000000000000000"
+                }
+              ],
+              "roles": ["ESDTRoleLocalBurn"]
+            }
+          },
+          "storage": {
+            "str:burn_rate_percent": "50",
+            "str:entries.len": "3",
+            "str:entries.item|u32:1": "address:user",
+            "str:entries.item|u32:2": "address:user",
+            "str:entries.item|u32:3": "address:user",
+            "str:fees_address": "address:fees",
+            "str:prize": {
+              "1": "nested:str:ASH-000000",
+              "2": "u64:0",
+              "3": "biguint:50000,000000000000000000"
+            },
+            "str:raffle_name": "str:raffle_1",
+            "str:state": "1",
+            "str:ticket_price": {
+              "1": "nested:str:JEX-000000",
+              "2": "u64:0",
+              "3": "biguint:10000,000000000000000000"
+            },
+            "str:ticket_sale_end_timestamp": "3600"
+          }
+        }
+      }
+    }
+  ]
+}

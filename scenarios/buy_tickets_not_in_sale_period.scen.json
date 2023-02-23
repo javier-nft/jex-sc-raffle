@@ -1,0 +1,47 @@
+{
+  "steps": [
+    {
+      "step": "externalSteps",
+      "path": "start_raffle_nominal.scen.json"
+    },
+    {
+      "step": "setState",
+      "accounts": {
+        "address:user": {
+          "nonce": "1",
+          "balance": "0",
+          "esdt": {
+            "str:JEX-000000": "30000,000000000000000000"
+          }
+        }
+      },
+      "currentBlockInfo": {
+        "blockTimestamp": "4000"
+      }
+    },
+    {
+      "step": "scCall",
+      "txId": "buyTicketsNotInSalePeriod",
+      "tx": {
+        "from": "address:user",
+        "to": "sc:raffle",
+        "function": "buyTickets",
+        "esdtValue": [
+          {
+            "tokenIdentifier": "str:JEX-000000",
+            "value": "30000,000000000000000000"
+          }
+        ],
+        "arguments": ["3"],
+        "gasLimit": "5,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "status": "4",
+        "message": "str:Not in tickets sale period",
+        "gas": "*",
+        "refund": "*"
+      }
+    }
+  ]
+}

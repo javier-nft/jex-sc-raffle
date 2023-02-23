@@ -1,0 +1,32 @@
+{
+  "steps": [
+    {
+      "step": "externalSteps",
+      "path": "buy_tickets_nominal.scen.json"
+    },
+    {
+      "step": "setState",
+      "currentBlockInfo": {
+        "blockTimestamp": "2000"
+      }
+    },
+    {
+      "step": "scCall",
+      "txId": "pickWinnersStillSalePeriod",
+      "tx": {
+        "from": "address:owner",
+        "to": "sc:raffle",
+        "function": "pickWinners",
+        "arguments": ["10"],
+        "gasLimit": "5,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "status": "4",
+        "message": "str:Still in tickets sale period",
+        "gas": "*",
+        "refund": "*"
+      }
+    }
+  ]
+}

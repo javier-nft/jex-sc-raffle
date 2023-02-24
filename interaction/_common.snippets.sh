@@ -14,7 +14,7 @@ allowBurn() {
     read -e -p "Path to keyfile: " KEYFILE
 
     TOKEN_IDENTIFIER="$(echo -n "${TOKEN_IDENTIFIER}" | xxd -ps)"
-    SC_ADDRESS_HEX="$(erdpy wallet bech32 --decode ${SC_ADDRESS})"
+    SC_ADDRESS_HEX="$(mxpy wallet bech32 --decode ${SC_ADDRESS})"
     ROLE="$(echo -n "ESDTRoleLocalBurn" | xxd -ps)"
     SET_ROLE_DATA="setSpecialRole@${TOKEN_IDENTIFIER}@${SC_ADDRESS_HEX}@${ROLE}"
     SET_ROLE_ADDRESS=erd1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzllls8a5w6u
@@ -81,7 +81,7 @@ getEntries() {
     FROM=${1:-0}
     SIZE=${2:-50}
 
-    erdpy contract query ${SC_ADDRESS} \
+    mxpy contract query ${SC_ADDRESS} \
         --function "getEntries" --arguments "${FROM}" "${SIZE}" \
         --proxy=${PROXY}
 }
@@ -95,7 +95,7 @@ getWinners() {
 
     RAFFLE_NAME="0x$(echo -n "${RAFFLE_NAME}" | xxd -ps)"
 
-    erdpy contract query ${SC_ADDRESS} \
+    mxpy contract query ${SC_ADDRESS} \
         --function "getWinners" --arguments "${RAFFLE_NAME}" \
         --proxy=${PROXY}
 }

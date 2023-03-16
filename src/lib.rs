@@ -125,6 +125,18 @@ pub trait JexScRaffleContract {
         self.send_leftovers_to_owner();
     }
 
+    #[endpoint(clearEntries)]
+    #[only_owner]
+    fn clear_entries(&self, count: u32) {
+        let leftover_balance = self.get_leftover_balance();
+
+        require!(leftover_balance == 0u32, "Rewards not distributed");
+
+        for _ in 0..count {
+            self.entries().swap_remove(1);
+        }
+    }
+
     #[endpoint(endRaffle)]
     #[only_owner]
     fn end_raffle(&self) {

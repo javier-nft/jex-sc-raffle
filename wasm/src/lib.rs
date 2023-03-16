@@ -5,9 +5,9 @@
 ////////////////////////////////////////////////////
 
 // Init:                                 1
-// Endpoints:                           14
+// Endpoints:                           15
 // Async Callback (empty):               1
-// Total number of exported functions:  16
+// Total number of exported functions:  17
 
 #![no_std]
 #![feature(alloc_error_handler, lang_items)]
@@ -20,6 +20,7 @@ multiversx_sc_wasm_adapter::endpoints! {
     (
         startRaffle
         pickWinners
+        clearEntries
         endRaffle
         buyTickets
         getRaffleStatus

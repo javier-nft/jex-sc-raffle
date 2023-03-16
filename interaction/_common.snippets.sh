@@ -67,8 +67,18 @@ startRaffle() {
 
 endRaffle() {
     mxpy contract call ${SC_ADDRESS} --recall-nonce --keyfile=${KEYFILE} \
-        --gas-limit=20000000 \
+        --gas-limit=100000000 \
         --function="endRaffle" \
+        --proxy=${PROXY} --chain=${CHAIN} --send || return
+}
+
+clearEntries() {
+    read -p "Count (eg 250): " COUNT
+
+    mxpy contract call ${SC_ADDRESS} --recall-nonce --keyfile=${KEYFILE} \
+        --gas-limit=100000000 \
+        --function="clearEntries" \
+        --arguments ${COUNT} \
         --proxy=${PROXY} --chain=${CHAIN} --send || return
 }
 
@@ -81,9 +91,20 @@ getEntries() {
     FROM=${1:-0}
     SIZE=${2:-50}
 
+    count=$((${FROM}+1))
     mxpy contract query ${SC_ADDRESS} \
         --function "getEntries" --arguments "${FROM}" "${SIZE}" \
-        --proxy=${PROXY}
+        --proxy=${PROXY} | jq -r .[].hex \
+            | while read hex; do
+                echo -n "#${count}: "
+                mxpy wallet bech32 --encode ${hex}
+                count=$((count+1))
+            done
+}
+
+getNbEntries() {
+    curl -s "https://gateway.multiversx.com/address/${SC_ADDRESS}/key/656e74726965732e6c656e"
+    echo ""
 }
 
 getRaffleStatus() {

@@ -23,6 +23,18 @@ deploy() {
     echo "Smart contract address: ${SC_ADDRESS}"
 }
 
+upgrade() {
+    echo 'You are about to upgrade current SC on mainnet (Ctrl-C to abort)'
+    read answer
+
+    mxpy contract upgrade --bytecode ${PROJECT}/output-docker/jex-sc-raffle/jex-sc-raffle.wasm \
+        --keyfile=${KEYFILE} --gas-limit=150000000 --outfile="deploy-mainnet.interaction.json" \
+        --proxy=${PROXY} --chain=${CHAIN} --recall-nonce --send ${SC_ADDRESS} || return
+
+    echo ""
+    echo "Smart contract upgraded: ${SC_ADDRESS}"
+}
+
 verify() {
     mxpy contract verify "${SC_ADDRESS}" \
         --packaged-src=${PROJECT}/output-docker/jex-sc-raffle/jex-sc-raffle-0.0.0.source.json \

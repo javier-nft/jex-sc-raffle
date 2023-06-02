@@ -2,7 +2,7 @@
   "steps": [
     {
       "step": "externalSteps",
-      "path": "start_raffle_nominal.scen.json"
+      "path": "start_raffle.scen.json"
     },
     {
       "step": "setState",
@@ -11,17 +11,16 @@
           "nonce": "1",
           "balance": "0",
           "esdt": {
-            "str:JEX-000000": "30000,000000000000000000"
+            "str:JEX-000000": "3000,000000000000000000"
           }
         }
       },
       "currentBlockInfo": {
-        "blockTimestamp": "4000"
+        "blockTimestamp": "600000"
       }
     },
     {
       "step": "scCall",
-      "txId": "buyTicketsNotInSalePeriod",
       "tx": {
         "from": "address:user",
         "to": "sc:raffle",
@@ -29,11 +28,11 @@
         "esdtValue": [
           {
             "tokenIdentifier": "str:JEX-000000",
-            "value": "30000,000000000000000000"
+            "value": "3000,000000000000000000"
           }
         ],
         "arguments": ["3"],
-        "gasLimit": "5,000,000",
+        "gasLimit": "10,000,000",
         "gasPrice": "0"
       },
       "expect": {

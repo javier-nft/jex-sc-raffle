@@ -15,13 +15,12 @@
     },
     {
       "step": "scCall",
-      "txId": "endRaffleNotOwner",
       "tx": {
         "from": "address:user",
         "to": "sc:raffle",
         "function": "endRaffle",
         "arguments": [],
-        "gasLimit": "5,000,000",
+        "gasLimit": "10,000,000",
         "gasPrice": "0"
       },
       "expect": {

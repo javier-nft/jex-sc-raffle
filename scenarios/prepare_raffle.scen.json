@@ -9,14 +9,14 @@
       "accounts": {
         "address:owner": {
           "nonce": "1",
-          "balance": "0",
-          "esdt": {
-            "str:ASH-000000": "50000,000000000000000000"
-          }
+          "balance": "0"
         },
         "sc:raffle": {
           "code": "file:../output/jex-sc-raffle.wasm",
           "esdt": {
+            "str:RARE-000000": {
+              "roles": ["ESDTRoleLocalBurn"]
+            },
             "str:JEX-000000": {
               "roles": ["ESDTRoleLocalBurn"]
             }
@@ -30,27 +30,18 @@
     },
     {
       "step": "scCall",
-      "txId": "startRaffleNominal",
       "tx": {
         "from": "address:owner",
         "to": "sc:raffle",
-        "function": "startRaffle",
-        "esdtValue": [
-          {
-            "tokenIdentifier": "str:ASH-000000",
-            "value": "50000,000000000000000000"
-          }
-        ],
+        "function": "prepareRaffle",
         "arguments": [
           "str:raffle_1",
-          "3600",
-          "str:JEX-000000",
-          "0",
-          "10000,000000000000000000",
-          "50",
-          "address:fees"
+          "u32:45",
+          "u32:10",
+          "address:fees",
+          "u32:45"
         ],
-        "gasLimit": "5,000,000",
+        "gasLimit": "10,000,000",
         "gasPrice": "0"
       },
       "expect": {
@@ -63,6 +54,10 @@
     {
       "step": "checkState",
       "accounts": {
+        "address:fees": {
+          "balance": "0",
+          "nonce": "*"
+        },
         "address:owner": {
           "balance": "0",
           "nonce": "2"
@@ -70,33 +65,20 @@
         "sc:raffle": {
           "code": "*",
           "esdt": {
-            "str:ASH-000000": "50000,000000000000000000",
+            "str:RARE-000000": {
+              "roles": ["ESDTRoleLocalBurn"]
+            },
             "str:JEX-000000": {
-              "instances": [
-                {
-                  "nonce": "0",
-                  "balance": ""
-                }
-              ],
               "roles": ["ESDTRoleLocalBurn"]
             }
           },
           "storage": {
-            "str:burn_rate_percent": "50",
+            "str:burn_rate_percent": "45",
+            "str:fees_rate_percent": "10",
             "str:fees_address": "address:fees",
-            "str:prize": {
-              "1": "nested:str:ASH-000000",
-              "2": "u64:0",
-              "3": "biguint:50000,000000000000000000"
-            },
             "str:raffle_name": "str:raffle_1",
-            "str:state": "1",
-            "str:ticket_price": {
-              "1": "nested:str:JEX-000000",
-              "2": "u64:0",
-              "3": "biguint:10000,000000000000000000"
-            },
-            "str:ticket_sale_end_timestamp": "3600"
+            "str:state": "0",
+            "str:prize_pool_rate_percent": "45"
           }
         }
       }

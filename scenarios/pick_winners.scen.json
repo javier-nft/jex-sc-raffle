@@ -19,7 +19,15 @@
         "sc:raffle": {
           "code": "file:../output/jex-sc-raffle.wasm",
           "esdt": {
-            "str:ASH-000000": "40000,000000000000000000",
+            "str:RARE-000000": {
+              "instances": [
+                {
+                  "nonce": "0",
+                  "balance": "50000,000000000000000000"
+                }
+              ],
+              "roles": ["ESDTRoleLocalBurn"]
+            },
             "str:JEX-000000": {
               "instances": [
                 {
@@ -32,7 +40,6 @@
           },
           "owner": "address:owner",
           "storage": {
-            "str:burn_rate_percent": "",
             "str:entries.len": "15",
             "str:entries.item|u32:1": "address:user",
             "str:entries.item|u32:2": "address:user",
@@ -50,19 +57,12 @@
             "str:entries.item|u32:14": "address:user7",
             "str:entries.item|u32:15": "address:user8",
             "str:fees_address": "address:fees",
-            "str:prize": {
-              "1": "nested:str:ASH-000000",
-              "2": "u64:0",
-              "3": "biguint:40000,000000000000000000"
-            },
             "str:raffle_name": "str:raffle_1",
             "str:state": "1",
-            "str:ticket_price": {
-              "1": "nested:str:JEX-000000",
-              "2": "u64:0",
-              "3": "biguint:10000,000000000000000000"
-            },
-            "str:ticket_sale_end_timestamp": "3600"
+            "str:ticket_sale_end_timestamp": "3600",
+            "str:ticket_tokens.len": "2",
+            "str:ticket_tokens.item|u32:1": "str:JEX-000000",
+            "str:ticket_tokens.item|u32:2": "str:RARE-000000"
           }
         }
       },
@@ -72,7 +72,6 @@
     },
     {
       "step": "scCall",
-      "txId": "pickWinnersNominal",
       "tx": {
         "from": "address:owner",
         "to": "sc:raffle",
@@ -92,33 +91,28 @@
       "step": "checkState",
       "accounts": {
         "address:fees": {
-          "nonce": "*",
           "balance": "0",
-          "esdt": {
-            "str:JEX-000000": "150000,000000000000000000"
-          }
+          "esdt": {},
+          "nonce": "*"
         },
         "address:owner": {
           "balance": "0",
-          "nonce": "3",
-          "esdt": {}
+          "esdt": {},
+          "nonce": "*"
         },
         "sc:raffle": {
           "code": "*",
           "esdt": {
-            "str:ASH-000000": "",
             "str:JEX-000000": {
-              "instances": [
-                {
-                  "nonce": "0",
-                  "balance": "0"
-                }
-              ],
+              "instances": [],
+              "roles": ["ESDTRoleLocalBurn"]
+            },
+            "str:RARE-000000": {
+              "instances": [],
               "roles": ["ESDTRoleLocalBurn"]
             }
           },
           "storage": {
-            "str:burn_rate_percent": "",
             "str:entries.len": "15",
             "str:entries.item|u32:1": "address:user",
             "str:entries.item|u32:2": "address:user",
@@ -136,25 +130,16 @@
             "str:entries.item|u32:14": "address:user7",
             "str:entries.item|u32:15": "address:user8",
             "str:fees_address": "address:fees",
-            "str:prize": {
-              "1": "nested:str:ASH-000000",
-              "2": "u64:0",
-              "3": "biguint:40000,000000000000000000"
-            },
             "str:raffle_name": "str:raffle_1",
             "str:state": "1",
-            "str:ticket_price": {
-              "1": "nested:str:JEX-000000",
-              "2": "u64:0",
-              "3": "biguint:10000,000000000000000000"
-            },
             "str:ticket_sale_end_timestamp": "3600",
             "str:winners|nested:str:raffle_1|str:.len": "4",
             "str:winners|nested:str:raffle_1|str:.item|u32:1": "*",
             "str:winners|nested:str:raffle_1|str:.item|u32:2": "*",
             "str:winners|nested:str:raffle_1|str:.item|u32:3": "*",
             "str:winners|nested:str:raffle_1|str:.item|u32:4": "*",
-            "str:winners|nested:str:raffle_1|str:.item|u32:5": ""
+            "str:winners|nested:str:raffle_1|str:.item|u32:5": "",
+            "+": ""
           }
         },
         "+": ""

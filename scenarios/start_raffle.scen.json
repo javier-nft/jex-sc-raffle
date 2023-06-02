@@ -1,0 +1,59 @@
+{
+  "steps": [
+    {
+      "step": "externalSteps",
+      "path": "configure_ticket_price.scen.json"
+    },
+    {
+      "step": "setState",
+      "currentBlockInfo": {
+        "blockTimestamp": "500000"
+      }
+    },
+    {
+      "step": "scCall",
+      "tx": {
+        "from": "address:owner",
+        "to": "sc:raffle",
+        "function": "startRaffle",
+        "arguments": ["88000"],
+        "gasLimit": "10,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "status": "0",
+        "message": "",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "checkState",
+      "accounts": {
+        "address:fees": {
+          "balance": "0",
+          "nonce": "*"
+        },
+        "address:owner": {
+          "balance": "0",
+          "nonce": "*"
+        },
+        "sc:raffle": {
+          "code": "*",
+          "esdt": {
+            "str:RARE-000000": {
+              "roles": ["ESDTRoleLocalBurn"]
+            },
+            "str:JEX-000000": {
+              "roles": ["ESDTRoleLocalBurn"]
+            }
+          },
+          "storage": {
+            "str:ticket_sale_end_timestamp": "588000",
+            "+": ""
+          }
+        }
+      }
+    }
+  ]
+}

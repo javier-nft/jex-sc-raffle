@@ -99,6 +99,31 @@
           }
         }
       }
+    },
+    {
+      "step": "scQuery",
+      "tx": {
+        "to": "sc:raffle",
+        "function": "getRaffleStatus",
+        "arguments": []
+      },
+      "expect": {
+        "out": [
+          {
+            "01-name": "nested:str:raffle_1",
+            "02-state": "u8:1",
+            "03-burn_rate_percent": "u32:45",
+            "04-fees_rate_percent": "u32:10",
+            "05-fees_address": "u8:1|address:fees",
+            "06-prize_pool_rate_percent": "u32:45",
+            "07-ticket_sale_end_timestamp": "u64:588000",
+            "08-nb_entries": "u32:7",
+            "09-ticket_prices.len": "u32:2",
+            "10-ticket_prices_01": "nested:str:JEX-000000|u64:0|biguint:1000,000000000000000000",
+            "11-ticket_prices_02": "nested:str:RARE-000000|u64:0|biguint:500,000000000000000000"
+          }
+        ]
+      }
     }
   ]
 }

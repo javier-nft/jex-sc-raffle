@@ -19,6 +19,7 @@ pub struct RaffleStatus<M: ManagedTypeApi> {
     prize_pool_rate_percent: u32,
     ticket_sale_end_timestamp: u64,
     nb_entries: usize,
+    ticket_prices: ManagedVec<M, EsdtTokenPayment<M>>,
 }
 
 #[multiversx_sc::contract]
@@ -266,6 +267,15 @@ pub trait JexScRaffleContract {
             Option::Some(self.fees_address().get())
         };
 
+        // let ticket_prices = ManagedVec::<Self::Api, EsdtTokenPayment>::new();
+        let ticket_prices: ManagedVec<Self::Api, EsdtTokenPayment> = self
+            .ticket_tokens()
+            .iter()
+            .map(|token| {
+                EsdtTokenPayment::new(token.clone(), 0u64, self.ticket_price(&token).get())
+            })
+            .collect();
+
         return RaffleStatus {
             name: self.raffle_name().get(),
             burn_rate_percent: self.burn_rate_percent().get(),
@@ -275,6 +285,7 @@ pub trait JexScRaffleContract {
             prize_pool_rate_percent: self.prize_pool_rate_percent().get(),
             state: self.state().get(),
             ticket_sale_end_timestamp: self.ticket_sale_end_timestamp().get(),
+            ticket_prices,
         };
     }
 

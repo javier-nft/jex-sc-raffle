@@ -2,28 +2,31 @@
 
 ## Owner endpoints
 
-startRaffle (...)
+### prepareRaffle (...)
 
-  * rewards (tokens)
-  * ticket sale duration (seconds)
+  * name
+  * burn percent
+  * fees percent + receiver
+  * pool prize percent
+
+
+### configureTicketPrice (...)
+  * ticket token identifier
   * ticket price
-  * burn rate percent
-  * fees address
 
 
-enableBuyWithNFT (...) **not implemented**
+### startRaffle (...)
 
-  * collection
-  * nonce
-  * nb tickets
+  * ticket sale duration (seconds)
 
 
-pickWinners ()
+### pickWinners ()
 
   * select winners randomly
   * send rewards to winners
 
-endRaffle ()
+
+### endRaffle ()
 
   * clear entries
   * send back NFTs to owners
@@ -31,11 +34,26 @@ endRaffle ()
 
 ## Public endpoints
 
-buyTickets (...)
+### buyTickets (...)
 
   * nb tickets
 
 
-buyTicketWithNFT (...) **not implemented**
+## Views
 
-  * NFT transfer
+### getRaffleStatus
+
+  * name
+  * state: State,
+  * burn_rate_percent
+  * fees_rate_percent
+  * fees_address (option)
+  * prize_pool_rate_percent
+  * ticket_sale_end_timestamp
+  * nb_entries
+  * ticket_prices
+
+
+### getEntries
+
+return the list of entries (1 entry = 1 address)

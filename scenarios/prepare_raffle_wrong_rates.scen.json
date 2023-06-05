@@ -7,7 +7,7 @@
     {
       "step": "setState",
       "accounts": {
-        "address:anon": {
+        "address:owner": {
           "nonce": "1",
           "balance": "0"
         }
@@ -15,18 +15,23 @@
     },
     {
       "step": "scCall",
-      "txId": "startRaffleNotOwner",
       "tx": {
-        "from": "address:anon",
+        "from": "address:owner",
         "to": "sc:raffle",
-        "function": "startRaffle",
-        "arguments": ["10000"],
+        "function": "prepareRaffle",
+        "arguments": [
+          "str:raffle_1",
+          "u32:100",
+          "u32:10",
+          "address:fees",
+          "u32:45"
+        ],
         "gasLimit": "10,000,000",
         "gasPrice": "0"
       },
       "expect": {
         "status": "4",
-        "message": "str:Endpoint can only be called by owner",
+        "message": "str:Sum of rates should be 100",
         "gas": "*",
         "refund": "*"
       }

@@ -14,7 +14,6 @@
         "sc:raffle": {
           "code": "file:../output/jex-sc-raffle.wasm",
           "esdt": {
-            "str:ASH-000000": "40000,000000000000000000",
             "str:JEX-000000": {
               "instances": [
                 {
@@ -43,13 +42,7 @@
             },
             "str:raffle_name": "str:raffle_1",
             "str:state": "1",
-            "str:ticket_price": {
-              "1": "nested:str:JEX-000000",
-              "2": "u64:0",
-              "3": "biguint:10000,000000000000000000"
-            },
-            "str:ticket_sale_end_timestamp": "3600",
-            "str:ticket_token": "nested:str:JEX-000000|u64:0"
+            "str:ticket_sale_end_timestamp": "3600"
           }
         }
       },
@@ -65,7 +58,7 @@
         "to": "sc:raffle",
         "function": "pickWinners",
         "arguments": ["999"],
-        "gasLimit": "5,000,000",
+        "gasLimit": "10,000,000",
         "gasPrice": "0"
       },
       "expect": {

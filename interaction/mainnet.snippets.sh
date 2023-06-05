@@ -7,6 +7,8 @@ SCRIPT_DIR=$(dirname $0)
 
 source "${SCRIPT_DIR}/_common.snippets.sh"
 
+# Reproducible build using:
+# mxpy contract reproducible-build --docker-image="multiversx/sdk-rust-contract-builder:v5.0.0"
 deploy() {
     echo 'You are about to deploy SC on mainnet (Ctrl-C to abort)'
     read answer

@@ -37,31 +37,41 @@ pickWinners() {
         --proxy=${PROXY} --chain=${CHAIN} --send || return
 }
 
-startRaffle() {
+prepareRaffle() {
     read -p "Raffle name: " RAFFLE_NAME
-    read -p "Prize token identifier: " PRIZE_TOKEN_IDENTIFIER
-    read -p "Prize amount (in weis - no float): " PRIZE_AMOUNT
-    read -p "Sale duration (sec): " SALE_DURATION
-    read -p "Tickets token identifier: " TICKETS_TOKEN_IDENTIFIER
-    read -p "Tickets token nonce (decimal): " TICKETS_TOKEN_NONCE
-    read -p "Price per ticket (in weis - no float): " PRICE_PER_TICKET
     read -p "Burn rate (0-100): " BURN_RATE
+    read -p "Fees rate (0-100): " FEES_RATE
     read -p "Fees receiver: " FEES_RECEIVER
-
-    RAFFLE_NAME="0x$(echo -n "${RAFFLE_NAME}" | xxd -ps)"
-    PRIZE_TOKEN_IDENTIFIER="0x$(echo -n "${PRIZE_TOKEN_IDENTIFIER}" | xxd -ps)"
-    TICKETS_TOKEN_IDENTIFIER="0x$(echo -n "${TICKETS_TOKEN_IDENTIFIER}" | xxd -ps)"
-    FEES_RECEIVER="0x$(mxpy wallet bech32 --decode ${FEES_RECEIVER})"
-    METHOD="0x$(echo -n "startRaffle" | xxd -ps)"
+    read -p "Prize pool rate (0-100): " PRIZE_POOL_RATE
 
     mxpy contract call ${SC_ADDRESS} --recall-nonce --keyfile=${KEYFILE} \
         --gas-limit=10000000 \
-        --function="ESDTTransfer" \
-        --arguments ${PRIZE_TOKEN_IDENTIFIER} ${PRIZE_AMOUNT} \
-                    ${METHOD} \
-                    "${RAFFLE_NAME}" \
-                    ${SALE_DURATION} ${TICKETS_TOKEN_IDENTIFIER} ${TICKETS_TOKEN_NONCE} \
-                    ${PRICE_PER_TICKET} ${BURN_RATE} ${FEES_RECEIVER} \
+        --function="prepareRaffle" \
+        --arguments "str:${RAFFLE_NAME}" \
+            "${BURN_RATE}" \
+            "${FEES_RATE}" "${FEES_RECEIVER}" \
+            "${PRIZE_POOL_RATE}" \
+        --proxy=${PROXY} --chain=${CHAIN} --send || return
+}
+
+configureTicketPrice() {
+    read -p "Token identifier: " TOKEN_IDENTIFIER
+    read -p "Amount: " TOKEN_AMOUNT
+
+    mxpy contract call ${SC_ADDRESS} --recall-nonce --keyfile=${KEYFILE} \
+        --gas-limit=10000000 \
+        --function="configureTicketPrice" \
+        --arguments "str:${TOKEN_IDENTIFIER}" "${TOKEN_AMOUNT}" \
+        --proxy=${PROXY} --chain=${CHAIN} --send || return
+}
+
+startRaffle() {
+    read -p "Sale duration (sec): " SALE_DURATION
+
+    mxpy contract call ${SC_ADDRESS} --recall-nonce --keyfile=${KEYFILE} \
+        --gas-limit=10000000 \
+        --function="startRaffle" \
+        --arguments ${SALE_DURATION} \
         --proxy=${PROXY} --chain=${CHAIN} --send || return
 }
 
@@ -103,7 +113,7 @@ getEntries() {
 }
 
 getNbEntries() {
-    curl -s "https://gateway.multiversx.com/address/${SC_ADDRESS}/key/656e74726965732e6c656e"
+    curl -s "${PROXY}/address/${SC_ADDRESS}/key/656e74726965732e6c656e"
     echo ""
 }
 

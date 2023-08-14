@@ -222,7 +222,7 @@ pub trait JexScRaffleContract {
     }
 
     fn send_rewards_to_winners(&self, nb_winners: u16) {
-        let entries_mapper = self.entries();
+        let mut entries_mapper = self.entries();
 
         require!(
             entries_mapper.len() >= nb_winners.into(),
@@ -236,6 +236,8 @@ pub trait JexScRaffleContract {
 
             let winner = entries_mapper.get(num);
             self.winners(&raffle_name).push(&winner);
+
+            entries_mapper.swap_remove(num);
         }
 
         let winners: ManagedVec<Self::Api, ManagedAddress<Self::Api>> =

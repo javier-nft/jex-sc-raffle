@@ -4,11 +4,12 @@ PROXY=https://gateway.multiversx.com
 SC_ADDRESS=$(mxpy data load --key=address-mainnet)
 CHAIN=1
 SCRIPT_DIR=$(dirname $0)
+DOCKER_IMAGE=multiversx/sdk-rust-contract-builder:v5.1.0
 
 source "${SCRIPT_DIR}/_common.snippets.sh"
 
 # Reproducible build using:
-# mxpy contract reproducible-build --docker-image="multiversx/sdk-rust-contract-builder:v5.0.0"
+# mxpy contract reproducible-build --docker-image="${DOCKER_IMAGE}"
 deploy() {
     echo 'You are about to deploy SC on mainnet (Ctrl-C to abort)'
     read answer
@@ -41,7 +42,7 @@ verify() {
     mxpy contract verify "${SC_ADDRESS}" \
         --packaged-src=${PROJECT}/output-docker/jex-sc-raffle/jex-sc-raffle-0.0.0.source.json \
         --verifier-url="https://play-api.multiversx.com" \
-        --docker-image="multiversx/sdk-rust-contract-builder:v4.1.3" \
+        --docker-image="${DOCKER_IMAGE}" \
         --keyfile=${KEYFILE}
 }
 

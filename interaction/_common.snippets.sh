@@ -32,7 +32,7 @@ pickWinners() {
     read -p "Nb winning tickets: " NB_WINNING_TICKETS
 
     mxpy contract call ${SC_ADDRESS} --recall-nonce --keyfile=${KEYFILE} \
-        --gas-limit=10000000 \
+        --gas-limit=50000000 \
         --function="pickWinners" --arguments ${NB_WINNING_TICKETS} \
         --proxy=${PROXY} --chain=${CHAIN} --send || return
 }

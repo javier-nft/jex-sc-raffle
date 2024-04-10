@@ -11,6 +11,6 @@ fn world() -> ScenarioWorld {
 }
 
 #[test]
-fn raffle_rs() {
-    multiversx_sc_scenario::run_rs("scenarios/pick_winners_too_many_winners.scen.json", world());
+fn run_test() {
+    world().run("scenarios/buy_tickets.scen.json");
 }

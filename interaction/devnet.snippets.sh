@@ -1,5 +1,5 @@
 PROJECT=..
-KEYFILE="../../wallets/deployer.json"
+KEYFILE="../../wallets/deployer-shard2.json"
 PROXY=https://devnet-gateway.multiversx.com
 SC_ADDRESS=$(mxpy data load --key=address-devnet)
 CHAIN=D

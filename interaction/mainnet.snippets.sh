@@ -1,10 +1,10 @@
 BYTECODE=../output-docker/jex-sc-raffle/jex-sc-raffle.wasm
-KEYFILE="../../wallets/deployer.json"
+KEYFILE="../../wallets/deployer-shard2.json"
 PROXY=https://gateway.multiversx.com
 SC_ADDRESS=$(mxpy data load --key=address-mainnet)
 CHAIN=1
 SCRIPT_DIR=$(dirname $0)
-DOCKER_IMAGE=multiversx/sdk-rust-contract-builder:v5.1.0
+DOCKER_IMAGE=multiversx/sdk-rust-contract-builder:v6.1.1
 
 source "${SCRIPT_DIR}/_common.snippets.sh"
 

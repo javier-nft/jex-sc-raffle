@@ -1,5 +1,7 @@
 #![no_std]
 
+use multiversx_sc::hex_literal::hex;
+
 multiversx_sc::imports!();
 multiversx_sc::derive_imports!();
 
@@ -27,6 +29,13 @@ pub trait JexScRaffleContract {
     #[init]
     fn init(&self) {
         self.state().set_if_empty(State::Ended);
+    }
+
+    #[upgrade]
+    fn upgrade(&self) {
+        self.dead_address().set_if_empty(ManagedAddress::from(hex!(
+            "6e7ad6e7ad6e7ad6e7ad6e7ad6e7ad6e7ad6e7ad6e7ad6e7ad6e7ad6e7ad6e7a"
+        )));
     }
 
     // Owner endpoints
@@ -70,13 +79,6 @@ pub trait JexScRaffleContract {
         self.ticket_tokens().insert(ticket_token_identifier.clone());
         self.ticket_price(&ticket_token_identifier)
             .set(&ticket_price);
-
-        if self.burn_rate_percent().get() > 0u32 {
-            let roles = self
-                .blockchain()
-                .get_esdt_local_roles(&ticket_token_identifier);
-            require!(roles.has_role(&EsdtLocalRole::Burn), "Burn role missing");
-        }
     }
 
     #[endpoint(startRaffle)]
@@ -185,8 +187,8 @@ pub trait JexScRaffleContract {
         let burn_percent = self.burn_rate_percent().get();
         if burn_percent > 0u32 {
             let burn_amount = (&payment_amount * burn_percent) / 100u32;
-            self.send()
-                .esdt_local_burn(&payment_token, 0u64, &burn_amount);
+
+            self.burn(&payment_token, &burn_amount);
         }
 
         let fees_percent = self.fees_rate_percent().get();
@@ -202,6 +204,17 @@ pub trait JexScRaffleContract {
     }
 
     // Functions
+
+    fn burn(&self, token_id: &TokenIdentifier, amount: &BigUint) {
+        let roles = self.blockchain().get_esdt_local_roles(&token_id);
+
+        if roles.has_role(&EsdtLocalRole::Burn) {
+            self.send().esdt_local_burn(&token_id, 0u64, &amount);
+        } else {
+            self.send()
+                .direct_esdt(&self.dead_address().get(), token_id, 0u64, &amount);
+        }
+    }
 
     fn send_leftovers_to_owner(&self) {
         for token_identifier in self.ticket_tokens().iter() {
@@ -305,6 +318,10 @@ pub trait JexScRaffleContract {
     #[view(getBurnRatePercent)]
     #[storage_mapper("burn_rate_percent")]
     fn burn_rate_percent(&self) -> SingleValueMapper<u32>;
+
+    #[view(getDeadAddress)]
+    #[storage_mapper("dead_address")]
+    fn dead_address(&self) -> SingleValueMapper<ManagedAddress>;
 
     #[storage_mapper("entries")]
     fn entries(&self) -> VecMapper<ManagedAddress>;

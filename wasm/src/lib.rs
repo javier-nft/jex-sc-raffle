@@ -5,9 +5,9 @@
 ////////////////////////////////////////////////////
 
 // Init:                                 1
-// Endpoints:                           19
+// Endpoints:                           21
 // Async Callback (empty):               1
-// Total number of exported functions:  21
+// Total number of exported functions:  23
 
 #![no_std]
 #![allow(internal_features)]
@@ -20,6 +20,7 @@ multiversx_sc_wasm_adapter::endpoints! {
     jex_sc_raffle
     (
         init => init
+        upgrade => upgrade
         prepareRaffle => prepare_raffle
         configureTicketPrice => configure_ticket_price
         startRaffle => start_raffle
@@ -30,6 +31,7 @@ multiversx_sc_wasm_adapter::endpoints! {
         getRaffleStatus => get_raffle_status
         getEntries => get_entries
         getBurnRatePercent => burn_rate_percent
+        getDeadAddress => dead_address
         getFeesRatePercent => fees_rate_percent
         getFeesAddress => fees_address
         getPrizePoolPercent => prize_pool_rate_percent

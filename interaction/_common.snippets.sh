@@ -5,6 +5,19 @@
 echo "Proxy: ${PROXY}"
 echo "SC address: ${SC_ADDRESS:-Not deployed}"
 
+buildSc() {
+    if [ -d "${SCRIPT_DIR}/../output-docker" ]
+    then
+        read -p "Remove existing folder? (press Enter)"
+
+        rm -rf "${SCRIPT_DIR}/../output-docker"
+    fi
+
+    pushd ..
+    mxpy contract reproducible-build --docker-image="multiversx/sdk-rust-contract-builder:v7.0.0"
+    popd
+}
+
 ##
 # Tools
 ##

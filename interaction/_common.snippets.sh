@@ -41,6 +41,12 @@ allowBurn() {
 # Owner endpoints
 ##
 
+claimDeveloperRewards() {
+    mxpy contract call ${SC_ADDRESS} --recall-nonce --keyfile=${KEYFILE} --gas-limit=6000000 \
+        --function="ClaimDeveloperRewards" \
+        --proxy=${PROXY} --chain=${CHAIN} --send || return
+}
+
 pickWinners() {
     read -p "Nb winning tickets: " NB_WINNING_TICKETS
 
